@@ -41,13 +41,13 @@ jobs:
           override: true
 
       - name: Install trunk
-        run: cargo install trunk
+        run: cargo install trunk --force
 
       - name: Install WebAssembly target
         run: rustup target add wasm32-unknown-unknown
 
       - name: Install tailwindcss
-        run: npm install tailwindcss
+        run: npm install tailwindcss 
 
       - name: Build with Trunk
 
