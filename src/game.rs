@@ -1,12 +1,10 @@
 use crate::algorithm::{
-    choose::GreedyChooser,
-    eval::{AlphaBetaNegamax, NaiveEvaluator, Negamax, Negascout},
-    score::{piece_value, PawnDifferenceScore},
+    score::{piece_value},
     ComputerPlayer,
 };
-use cozy_chess::{Board, Color, GameStatus, Piece, PieceMoves, Square};
+use cozy_chess::{Board, Color, Piece, PieceMoves, Square};
 use leptos::*;
-use std::{collections::HashMap, hash::Hash};
+use std::{collections::HashMap};
 
 fn map_difference(a: HashMap<Piece, usize>, b: HashMap<Piece, usize>) -> HashMap<Piece, usize> {
     let mut diff = HashMap::new();
@@ -169,17 +167,15 @@ pub fn ChessBoard(cx: Scope) -> impl IntoView {
     });
 
     create_effect(cx, move |_| {
-        if color.get() == user_color.get() {
-            if (moves.get().len() == 1) & picker.get().to().is_some() {
-                let mov = moves.get()[0];
+        if color.get() == user_color.get() && (moves.get().len() == 1) & picker.get().to().is_some() {
+            let mov = moves.get()[0];
 
-                log!("User Playing {:?}", mov);
+            log!("User Playing {:?}", mov);
 
-                cx.batch(|| {
-                    set_board.update(|b| b.play(mov));
-                    set_picker.update(|p| p.clear());
-                });
-            }
+            cx.batch(|| {
+                set_board.update(|b| b.play(mov));
+                set_picker.update(|p| p.clear());
+            });
         }
     });
 
@@ -255,7 +251,7 @@ pub fn ChessBoard(cx: Scope) -> impl IntoView {
             return false;
         }
         let moves = moves.get();
-        moves.len() > 0 && moves.into_iter().all(|mov| mov.promotion.is_some())
+        !moves.is_empty() && moves.into_iter().all(|mov| mov.promotion.is_some())
     });
 
     view! { cx,
@@ -368,7 +364,7 @@ fn Square(
                 } else {
                     ""
                 };
-                if highlight == "" {
+                if highlight.is_empty() {
                     format!("overflow-hidden select-none aspect-square {} hover:shadow-square-inner", color)
                 } else {
                     format!("overflow-hidden select-none aspect-square {} {}", color, highlight)

@@ -41,7 +41,7 @@ impl ComputerPlayer {
 
         let choice = self.chooser.choose(&moves, &weights);
 
-        choice.map(|a| a.clone())
+        choice.copied()
     }
 
     pub fn change_algorithm(&mut self, algorithm: Rc<dyn Evaluator>) {

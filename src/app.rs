@@ -1,7 +1,7 @@
 use crate::{
     algorithm::{
         choose::GreedyChooser,
-        eval::{AlphaBetaNegamax, Evaluator},
+        eval::{AlphaBetaNegamax},
         score::PawnDifferenceScore,
         ComputerPlayer,
     },
@@ -37,8 +37,8 @@ fn Home(cx: Scope) -> impl IntoView {
         cx,
         ComputerPlayer::new(
             Rc::new(AlphaBetaNegamax::new(4)),
-            Rc::new(PawnDifferenceScore::default()),
-            Rc::new(GreedyChooser::default()),
+            Rc::new(PawnDifferenceScore),
+            Rc::new(GreedyChooser),
         ),
     );
     provide_context(cx, opponent);
@@ -115,24 +115,24 @@ fn format_board_status(board: ReadSignal<Board>) -> String {
     let status = board.status();
 
     match (status, board.side_to_move()) {
-        (GameStatus::Drawn, _) => return "Draw!".to_string(),
+        (GameStatus::Drawn, _) => "Draw!".to_string(),
         (GameStatus::Ongoing, side) => {
-            return format!(
+            format!(
                 "{} to move!",
                 match side {
                     Color::White => "White",
                     Color::Black => "Black",
                 }
-            );
+            )
         }
         (_, side) => {
-            return format!(
+            format!(
                 "{} wins!",
                 match side.flipped() {
                     Color::White => "White",
                     Color::Black => "Black",
                 }
-            );
+            )
         }
     }
 }

@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::algorithm::{choose::*, eval::*, score::*, ComputerPlayer};
+use crate::algorithm::{eval::*, score::*, ComputerPlayer};
 use leptos::*;
 
 #[component]
@@ -31,7 +31,7 @@ pub fn OpponentMaker(cx: Scope) -> impl IntoView {
                             })
                         }
                         on:click=move |_| {
-                            set_opponent.update(|player| player.change_algorithm(Rc::new(NaiveEvaluator::default())));
+                            set_opponent.update(|player| player.change_algorithm(Rc::new(NaiveEvaluator)));
                             set_current_eval.set("1 Move Lookahead");
                             log!("Opponent set to NaiveEvaluator");
                         }>
@@ -93,7 +93,7 @@ pub fn OpponentMaker(cx: Scope) -> impl IntoView {
                             })
                         }
                         on:click=move |_| {
-                            set_opponent.update(|player| player.change_score_fn(Rc::new(PawnDifferenceScore::default())));
+                            set_opponent.update(|player| player.change_score_fn(Rc::new(PawnDifferenceScore)));
                             set_current_score.set("Pawn Difference Score");
                             log!("Opponent set to PawnDifferenceScore");
                         }>
