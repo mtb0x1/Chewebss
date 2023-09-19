@@ -18,7 +18,7 @@ fn get_sorted_moves(board: &Board, side: &Color) -> Vec<Move> {
     });
 
     board.generate_moves_for(board.colors(*side), |piece_moves| {
-        for mov in piece_moves {
+        for mov in piece_moves.into_iter() {
             if mov.promotion.is_some() {
                 promotions.push(mov);
             } else if board.color_on(mov.to).is_some_and(|color| color != *side) {

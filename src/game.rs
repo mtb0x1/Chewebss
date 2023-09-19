@@ -1,17 +1,14 @@
-use crate::algorithm::{
-    score::{piece_value},
-    ComputerPlayer,
-};
+use crate::algorithm::{score::piece_value, ComputerPlayer};
 use cozy_chess::{Board, Color, Piece, PieceMoves, Square};
 use leptos::*;
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 fn map_difference(a: HashMap<Piece, usize>, b: HashMap<Piece, usize>) -> HashMap<Piece, usize> {
     let mut diff = HashMap::new();
 
-    for (piece, count) in a {
+    for (piece, count) in a.iter() {
         let count_b = b.get(&piece).unwrap_or(&0);
-        diff.insert(piece, count - *count_b);
+        diff.insert(*piece, count - *count_b);
     }
 
     diff
@@ -24,7 +21,7 @@ pub trait Flip {
     where
         Self: Sized + Copy,
     {
-        let mut copy = *self;
+        let mut copy = self.clone();
         copy.flip();
         copy
     }
@@ -114,7 +111,7 @@ fn filter_moves(
 ) -> bool {
     let picker = picker.get();
 
-    for mov in moves_from {
+    for mov in moves_from.into_iter() {
         if let Some(to) = picker.to() {
             if let Some(promotion) = picker.promotion {
                 if mov.to == to && mov.promotion == Some(promotion) {
@@ -167,7 +164,8 @@ pub fn ChessBoard(cx: Scope) -> impl IntoView {
     });
 
     create_effect(cx, move |_| {
-        if color.get() == user_color.get() && (moves.get().len() == 1) & picker.get().to().is_some() {
+        if color.get() == user_color.get() && (moves.get().len() == 1) & picker.get().to().is_some()
+        {
             let mov = moves.get()[0];
 
             log!("User Playing {:?}", mov);

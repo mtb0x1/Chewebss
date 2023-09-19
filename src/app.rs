@@ -1,9 +1,6 @@
 use crate::{
     algorithm::{
-        choose::GreedyChooser,
-        eval::{AlphaBetaNegamax},
-        score::PawnDifferenceScore,
-        ComputerPlayer,
+        choose::GreedyChooser, eval::AlphaBetaNegamax, score::PawnDifferenceScore, ComputerPlayer,
     },
     game::{ChessBoard, Flip},
     opponent::OpponentMaker,
