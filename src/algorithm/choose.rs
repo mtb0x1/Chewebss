@@ -10,7 +10,6 @@ pub struct StochasticChooser;
 
 impl StochasticChooser {
     fn normalise(&self, weights: &[f64]) -> Vec<f64> {
-        
         let mut weights = weights.iter().map(|a| 10f64.powf(*a)).collect::<Vec<f64>>();
 
         // Calculate the reciprocal of the sum.

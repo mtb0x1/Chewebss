@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::hash::{Hash,Hasher};
+use std::hash::{Hash, Hasher};
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
@@ -17,8 +17,6 @@ fn normalise(weights: &[f64]) -> Vec<f64> {
         .collect()
 }
 
- 
-
 fn normalise1(weights: &[f64]) -> Vec<f64> {
     // Create a HashMap to cache pow calculations.
     let mut pow_cache: HashMap<String, f64> = HashMap::new();
@@ -26,7 +24,9 @@ fn normalise1(weights: &[f64]) -> Vec<f64> {
     // Function to calculate 10^w, using the cache if available.
     let mut calculate_pow = |w: f64| -> f64 {
         let key = w.to_string(); //hack since f64 doesn't have Eq
-        *pow_cache.entry(key.clone()).or_insert_with(|| 10f64.powf(w))
+        *pow_cache
+            .entry(key.clone())
+            .or_insert_with(|| 10f64.powf(w))
     };
 
     // Calculate the sum and populate the cache.
@@ -43,9 +43,7 @@ fn normalise1(weights: &[f64]) -> Vec<f64> {
 }
 
 pub fn normalise2(weights: &[f64]) -> Vec<f64> {
-
     let mut weights = weights.iter().map(|a| 10f64.powf(*a)).collect::<Vec<f64>>();
-
 
     let sum = weights.iter().sum::<f64>();
 
@@ -53,30 +51,21 @@ pub fn normalise2(weights: &[f64]) -> Vec<f64> {
         *weight /= sum;
     }
     weights
-
 }
 
-
 pub fn normalise3(weights: &[f64]) -> Vec<f64> {
-
     let mut weights = weights.iter().map(|a| 10f64.powf(*a)).collect::<Vec<f64>>();
 
-
-    let reciprocal = 1.0 /weights.iter().sum::<f64>();
+    let reciprocal = 1.0 / weights.iter().sum::<f64>();
 
     for weight in &mut weights {
         *weight *= reciprocal;
     }
     weights
-
 }
 
-
 pub fn normalise4(weights: &[f64]) -> Vec<f64> {
-
     let mut weights = weights.iter().map(|a| 10f64.powf(*a)).collect::<Vec<f64>>();
-
-
 
     let sum = weights.iter().sum::<f64>();
 
@@ -84,12 +73,9 @@ pub fn normalise4(weights: &[f64]) -> Vec<f64> {
         *weight /= sum;
     }
     weights
-
-
 }
 
 pub fn normalise5(weights: &[f64]) -> Vec<f64> {
-
     let mut weights = weights.iter().map(|a| 10f64.powf(*a)).collect::<Vec<f64>>();
 
     let reciprocal = 1.0 / weights.iter().sum::<f64>();
@@ -98,7 +84,6 @@ pub fn normalise5(weights: &[f64]) -> Vec<f64> {
         *weight *= reciprocal;
     }
     weights
-
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -123,15 +108,15 @@ impl Hash for FloatWrapper {
     }
 }
 
-
 fn normalise6(weights: &[f64]) -> Vec<f64> {
     // Create a HashMap to cache pow calculations.
     let mut pow_cache: HashMap<FloatWrapper, f64> = HashMap::new();
 
     // Function to calculate 10^w, using the cache if available.
     let mut calculate_pow = |w: f64| -> f64 {
-       
-        *pow_cache.entry(FloatWrapper(w)).or_insert_with(|| 10f64.powf(w))
+        *pow_cache
+            .entry(FloatWrapper(w))
+            .or_insert_with(|| 10f64.powf(w))
     };
 
     // Calculate the sum and populate the cache.
@@ -147,19 +132,23 @@ fn normalise6(weights: &[f64]) -> Vec<f64> {
         .collect()
 }
 
-
 fn normalise7(weights: &[f64]) -> Vec<f64> {
     // Create a HashMap to cache pow calculations.
     let mut pow_cache: HashMap<FloatWrapper, f64> = HashMap::new();
 
     // Function to calculate 10^w, using the cache if available.
-    let mut calculate_pow = |w: f64| -> f64 {   
-        *pow_cache.entry(FloatWrapper(w)).or_insert_with(|| 10f64.powf(w))
+    let mut calculate_pow = |w: f64| -> f64 {
+        *pow_cache
+            .entry(FloatWrapper(w))
+            .or_insert_with(|| 10f64.powf(w))
     };
 
-    let mut weights = weights.iter().map(|a| calculate_pow(*a)).collect::<Vec<f64>>();
+    let mut weights = weights
+        .iter()
+        .map(|a| calculate_pow(*a))
+        .collect::<Vec<f64>>();
 
-    let reciprocal = 1.0 /weights.iter().sum::<f64>();
+    let reciprocal = 1.0 / weights.iter().sum::<f64>();
 
     for weight in &mut weights {
         *weight *= reciprocal;
@@ -167,21 +156,34 @@ fn normalise7(weights: &[f64]) -> Vec<f64> {
     weights
 }
 
-
 fn normalise_benchmark(c: &mut Criterion) {
     let mut weights = Vec::new();
     for i in 0..1000000 {
         weights.push(i as f64);
     }
 
-    c.bench_function("normalise with reciprocal", |b| b.iter(|| normalise(black_box(&weights))));
+    c.bench_function("normalise with reciprocal", |b| {
+        b.iter(|| normalise(black_box(&weights)))
+    });
     //c.bench_function("normalise with reciprocal+str_w_hash", |b| b.iter(|| normalise1(black_box(&weights))));//wut ?
-    c.bench_function("normalise with loop", |b| b.iter(|| normalise2(black_box(&weights))));
-    c.bench_function("normalise with reciprocal+loop", |b| b.iter(|| normalise3(black_box(&weights))));
-    c.bench_function("normalise with mut_iter", |b| b.iter(|| normalise4(black_box(&weights))));   
-    c.bench_function("normalise with reciprocal+mut_iter", |b| b.iter(|| normalise5(black_box(&weights))));
-    c.bench_function("normalise with reciprocal+FW(w)_hash", |b| b.iter(|| normalise6(black_box(&weights))));
-    c.bench_function("normalise with reciprocal+loop+FW(w)_hash", |b| b.iter(|| normalise7(black_box(&weights))));
+    c.bench_function("normalise with loop", |b| {
+        b.iter(|| normalise2(black_box(&weights)))
+    });
+    c.bench_function("normalise with reciprocal+loop", |b| {
+        b.iter(|| normalise3(black_box(&weights)))
+    });
+    c.bench_function("normalise with mut_iter", |b| {
+        b.iter(|| normalise4(black_box(&weights)))
+    });
+    c.bench_function("normalise with reciprocal+mut_iter", |b| {
+        b.iter(|| normalise5(black_box(&weights)))
+    });
+    c.bench_function("normalise with reciprocal+FW(w)_hash", |b| {
+        b.iter(|| normalise6(black_box(&weights)))
+    });
+    c.bench_function("normalise with reciprocal+loop+FW(w)_hash", |b| {
+        b.iter(|| normalise7(black_box(&weights)))
+    });
 }
 
 criterion_group!(benches, normalise_benchmark);
