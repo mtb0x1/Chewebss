@@ -1,8 +1,7 @@
-use std::collections::HashMap;
-use std::hash::{Hash, Hasher};
-
+use crate::algorithm::*;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
+// TODO: implement eval
 fn eval() {}
 
 fn eval_benchmark(c: &mut Criterion) {

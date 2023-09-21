@@ -463,7 +463,7 @@ mod test {
 
         let eval = evaluator.eval_moves(board, score_fn);
 
-        let total_score: f64 = eval.into_iter().map(|(mov, score)| score).sum();
+        let total_score: f64 = eval.into_iter().map(|(_mov, score)| score).sum();
         assert_eq!(total_score, 0.0);
     }
 
@@ -487,7 +487,7 @@ mod test {
         println!("{:?}", eval);
         let mut nonzero_scores = eval
             .iter()
-            .filter_map(|(mov, score)| match score {
+            .filter_map(|(_mov, score)| match score {
                 0.0 => None,
                 _ => Some(score),
             })

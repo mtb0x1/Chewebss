@@ -7,7 +7,7 @@ fn map_difference(a: HashMap<Piece, usize>, b: HashMap<Piece, usize>) -> HashMap
     let mut diff = HashMap::new();
 
     for (piece, count) in a.iter() {
-        let count_b = b.get(&piece).unwrap_or(&0);
+        let count_b = b.get(piece).unwrap_or(&0);
         diff.insert(*piece, count - *count_b);
     }
 
@@ -21,7 +21,7 @@ pub trait Flip {
     where
         Self: Sized + Copy,
     {
-        let mut copy = self.clone();
+        let mut copy = *self;
         copy.flip();
         copy
     }
